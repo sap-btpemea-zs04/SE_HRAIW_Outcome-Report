@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Saudi Energy &middot; SAP AI Use Case Portfolio &middot; 11 Use Cases</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#F0F4F8;color:#0F172A;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh}
+a{color:inherit;text-decoration:none}
+
+.header{background:linear-gradient(135deg,#FFFFFF 0%,#EDF7F2 50%,#FFFFFF 100%);border-bottom:1px solid rgba(0,0,0,0.08);padding:28px 40px 24px;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
+.header-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.sap-badge{background:#F0AB00;color:#000;font-size:11px;font-weight:800;padding:5px 10px;border-radius:5px;letter-spacing:0.06em;white-space:nowrap}
+.header-title{flex:1}
+.header-title h1{font-size:22px;font-weight:700;color:#0F172A;line-height:1.2}
+.header-title p{font-size:12px;color:#64748B;margin-top:4px}
+
+.stats-bar{background:#FFFFFF;border-bottom:1px solid rgba(0,0,0,0.07);padding:14px 40px;box-shadow:0 1px 2px rgba(0,0,0,0.04)}
+.stats-inner{max-width:1400px;margin:0 auto;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.stat-chip{background:#F8FAFC;border:1px solid rgba(0,0,0,0.1);border-radius:20px;padding:6px 14px;font-size:12px;color:#374151;white-space:nowrap}
+.stat-chip span{color:#B45309;font-weight:700}
+
+.filters{padding:20px 40px 0;max-width:1400px;margin:0 auto;display:flex;gap:8px;flex-wrap:wrap}
+.filter-btn{background:#FFFFFF;border:1px solid rgba(0,0,0,0.12);border-radius:20px;padding:7px 16px;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;color:#374151;box-shadow:0 1px 2px rgba(0,0,0,0.04)}
+.filter-btn:hover{background:#F1F5F9;border-color:rgba(0,0,0,0.18)}
+.filter-btn.active-all{background:rgba(180,83,9,0.08);border-color:#B45309;color:#92400E}
+.filter-btn.active-emp{background:rgba(0,112,242,0.08); border-color:#0070F2;color:#1D4ED8}
+.filter-btn.active-lc {background:rgba(234,88,12,0.08);  border-color:#EA580C;color:#C2410C}
+.filter-btn.active-tal{background:rgba(5,150,105,0.08);  border-color:#059669;color:#065F46}
+.filter-btn.active-mgr{background:rgba(124,58,237,0.08); border-color:#7C3AED;color:#5B21B6}
+.filter-btn.active-lrn{background:rgba(217,119,6,0.08);  border-color:#D97706;color:#92400E}
+.filter-btn.active-pm {background:rgba(220,38,38,0.08);  border-color:#DC2626;color:#991B1B}
+
+.grid-wrapper{max-width:1400px;margin:24px auto 60px;padding:0 40px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:1100px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:680px){.grid{grid-template-columns:1fr}}
+
+.card{background:#FFFFFF;border:1px solid rgba(0,0,0,0.08);border-radius:12px;padding:20px;cursor:pointer;transition:transform .2s,box-shadow .2s;position:relative;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
+.card:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(0,0,0,0.12)}
+.card-top-border{position:absolute;top:0;left:0;right:0;height:3px}
+.card-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.card-icon{font-size:22px;line-height:1}
+.card-id{font-size:10px;font-weight:700;color:#64748B;background:#F1F5F9;border-radius:4px;padding:2px 6px;letter-spacing:0.05em;border:1px solid rgba(0,0,0,0.07)}
+.ai-pill{font-size:10px;font-weight:700;border-radius:10px;padding:3px 8px;white-space:nowrap}
+.ai-ML{background:rgba(0,112,242,0.1);color:#1D4ED8;border:1px solid rgba(0,112,242,0.25)}
+.ai-Agents{background:rgba(5,150,105,0.1);color:#065F46;border:1px solid rgba(5,150,105,0.25)}
+.ai-GenAI{background:rgba(109,40,217,0.1);color:#5B21B6;border:1px solid rgba(109,40,217,0.25)}
+.ai-Vision{background:rgba(124,58,237,0.1);color:#5B21B6;border:1px solid rgba(124,58,237,0.25)}
+.ai-Analytics{background:rgba(180,83,9,0.1);color:#92400E;border:1px solid rgba(180,83,9,0.25)}
+.selected-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(180,83,9,0.08);border:1px solid rgba(180,83,9,0.3);border-radius:10px;padding:2px 8px;font-size:10px;font-weight:700;color:#92400E;white-space:nowrap}
+.card-title{font-size:15px;font-weight:700;margin-bottom:8px;line-height:1.3;color:#0F172A}
+.group-pill{display:inline-block;font-size:10px;font-weight:700;border-radius:10px;padding:3px 8px;margin-bottom:10px}
+.gpill-emp{background:rgba(0,112,242,0.1);color:#1D4ED8;border:1px solid rgba(0,112,242,0.25)}
+.gpill-lc {background:rgba(234,88,12,0.1); color:#C2410C;border:1px solid rgba(234,88,12,0.25)}
+.gpill-tal{background:rgba(5,150,105,0.1); color:#065F46;border:1px solid rgba(5,150,105,0.25)}
+.gpill-mgr{background:rgba(124,58,237,0.1);color:#5B21B6;border:1px solid rgba(124,58,237,0.25)}
+.gpill-lrn{background:rgba(217,119,6,0.1); color:#92400E;border:1px solid rgba(217,119,6,0.25)}
+.gpill-pm {background:rgba(220,38,38,0.1); color:#991B1B;border:1px solid rgba(220,38,38,0.25)}
+.card-challenge{font-size:12px;color:#64748B;line-height:1.6;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:12px}
+.card-stars{font-size:12px;color:#D97706;margin-bottom:10px}
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.bar-label{font-size:10px;color:#94A3B8;width:44px;flex-shrink:0}
+.bar-track{flex:1;background:rgba(0,0,0,0.07);border-radius:3px;height:4px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px;transition:width .4s}
+
+.backdrop{display:none;position:fixed;inset:0;background:rgba(15,23,42,0.55);z-index:1000;backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:20px}
+.backdrop.open{display:flex}
+.modal{background:#FFFFFF;border:1px solid rgba(0,0,0,0.1);border-radius:16px;width:96%;max-width:1280px;max-height:94vh;overflow:hidden;display:flex;flex-direction:column;animation:slideIn .25s ease;box-shadow:0 24px 60px rgba(0,0,0,0.18)}
+@keyframes slideIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.modal-header{padding:28px 32px 22px;flex-shrink:0;border-bottom:1px solid rgba(0,0,0,0.07)}
+.modal-header-top{display:flex;align-items:flex-start;gap:14px;margin-bottom:14px}
+.modal-icon{font-size:28px;line-height:1}
+.modal-title-block{flex:1}
+.modal-title-block h2{font-size:20px;font-weight:700;margin-bottom:4px;color:#0F172A}
+.modal-title-block .modal-sub{font-size:12px;color:#94A3B8}
+.modal-close{background:#F1F5F9;border:1px solid rgba(0,0,0,0.12);border-radius:8px;color:#374151;font-size:16px;width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.modal-close:hover{background:#E2E8F0}
+.metric-chips{display:flex;gap:8px;flex-wrap:wrap}
+.metric-chip{background:#F8FAFC;border:1px solid rgba(0,0,0,0.09);border-radius:8px;padding:6px 12px;font-size:11px;text-align:center}
+.metric-chip .mc-val{font-size:14px;font-weight:700;display:block}
+.metric-chip .mc-lbl{color:#94A3B8;font-size:10px}
+.modal-body{flex:1;overflow-y:auto;padding:20px 32px 24px;display:grid;grid-template-columns:60% 40%;gap:20px}
+.modal-body::-webkit-scrollbar{width:4px}
+.modal-body::-webkit-scrollbar-track{background:rgba(0,0,0,0.03)}
+.modal-body::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.15);border-radius:2px}
+.panel{background:#F8FAFC;border:1px solid rgba(0,0,0,0.07);border-radius:10px;padding:18px;margin-bottom:12px}
+.panel:last-child{margin-bottom:0}
+.panel-heading{font-size:11px;font-weight:700;color:#0070F2;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px}
+.panel p,.panel li{font-size:13px;color:#374151;line-height:1.7}
+.panel ul{padding-left:16px}
+.panel li{margin-bottom:4px}
+.panel h4{font-size:12px;font-weight:700;color:#0F172A;margin:12px 0 6px}
+.sap-cards{display:flex;flex-direction:column;gap:7px}
+.sap-card{background:rgba(0,112,242,0.06);border:1px solid rgba(0,112,242,0.2);border-radius:7px;padding:8px 12px;font-size:12px;color:#1D4ED8;font-weight:600}
+.persona-cards{display:flex;flex-direction:column;gap:8px}
+.persona-card{background:#FFFFFF;border:1px solid rgba(0,0,0,0.08);border-radius:8px;padding:10px 12px;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
+.persona-card .pc-title{font-size:12px;font-weight:700;color:#0F172A;margin-bottom:3px}
+.persona-card .pc-desc{font-size:11px;color:#64748B;line-height:1.5}
+.radar-wrap{display:flex;justify-content:center;align-items:center;padding:8px 0}
+.phase-badge{display:inline-block;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;margin-bottom:10px}
+.phase-foundation{background:rgba(5,150,105,0.1);color:#065F46;border:1px solid rgba(5,150,105,0.3)}
+.phase-insights{background:rgba(217,119,6,0.1);color:#92400E;border:1px solid rgba(217,119,6,0.3)}
+.phase-vision{background:rgba(234,88,12,0.1);color:#C2410C;border:1px solid rgba(234,88,12,0.3)}
+.impl-row{display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px}
+.impl-label{color:#94A3B8}
+.impl-val{color:#0F172A;font-weight:600}
+.sap-pills{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.sap-pill{background:rgba(0,112,242,0.07);border:1px solid rgba(0,112,242,0.2);border-radius:12px;padding:3px 9px;font-size:10px;color:#1D4ED8}
+.modal-footer{padding:14px 28px;border-top:1px solid rgba(0,0,0,0.07);flex-shrink:0;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;background:#FAFAFA}
+.footer-nav{display:flex;gap:8px;align-items:center}
+.nav-btn{background:#FFFFFF;border:1px solid rgba(0,0,0,0.12);border-radius:8px;color:#374151;font-size:12px;font-weight:600;padding:7px 14px;cursor:pointer;transition:all .2s;box-shadow:0 1px 2px rgba(0,0,0,0.04)}
+.nav-btn:hover:not(:disabled){background:#F1F5F9}
+.nav-btn:disabled{opacity:0.3;cursor:default}
+.footer-counter{font-size:12px;color:#94A3B8}
+.footer-sources{font-size:10px;color:#94A3B8}
+.value-bullet{display:flex;gap:8px;margin-bottom:8px;font-size:13px;line-height:1.6;color:#374151}
+.ai-how-list{list-style:none;display:flex;flex-direction:column;gap:10px}
+.ai-how-list li{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:#1E293B;line-height:1.65}
+.ai-how-list li::before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:#006B3F;flex-shrink:0;margin-top:7px}
+.card.hidden{display:none}
+.oob-chip{display:inline-flex;align-items:center;gap:4px;border-radius:10px;padding:2px 8px;font-size:10px;font-weight:700;white-space:nowrap}
+.oob-HIGH{background:rgba(5,150,105,0.1);border:1px solid rgba(5,150,105,0.3);color:#065F46}
+.oob-MEDIUM{background:rgba(217,119,6,0.1);border:1px solid rgba(217,119,6,0.3);color:#92400E}
+.oob-LOW{background:rgba(234,88,12,0.1);border:1px solid rgba(234,88,12,0.3);color:#C2410C}
+.oob-bar{flex:1;height:5px;background:rgba(0,0,0,0.07);border-radius:3px;overflow:hidden}
+.oob-bar-fill{height:100%;border-radius:3px}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="sap-badge">SAP AI</div>
+    <div class="header-title">
+      <h1>Saudi Energy &middot; SAP AI Use Case Portfolio</h1>
+      <p>SAP SuccessFactors &middot; Agentic AI for Human Resources &middot; 11 Use Cases &middot; 6 HR Domains &middot; Click any card to explore</p>
+    </div>
+  </div>
+</div>
+
+<div class="stats-bar">
+  <div class="stats-inner">
+    <div class="stat-chip"><span>11</span> Use Cases</div>
+    <div class="stat-chip"><span>6</span> HR Domains</div>
+    <div class="stat-chip"><span>11</span> Selected by Customer</div>
+    <div class="stat-chip"><span>70,000+</span> Employees</div>
+    <div class="stat-chip"><span>SAP SuccessFactors</span></div>
+  </div>
+</div>
+
+<div style="max-width:1400px;margin:0 auto;padding:20px 40px 0">
+  <div class="filters" style="padding:0">
+    <button class="filter-btn active-all" onclick="filterCards('all',this)">All (11)</button>
+    <button class="filter-btn" onclick="filterCards('emp',this)">Employee Experience (1)</button>
+    <button class="filter-btn" onclick="filterCards('lc',this)">Employee Lifecycle (2)</button>
+    <button class="filter-btn" onclick="filterCards('tal',this)">Talent &amp; Recruitment (2)</button>
+    <button class="filter-btn" onclick="filterCards('mgr',this)">Manager &amp; Workforce (2)</button>
+    <button class="filter-btn" onclick="filterCards('lrn',this)">Learning &amp; Development (1)</button>
+    <button class="filter-btn" onclick="filterCards('pm',this)">Performance Management (3)</button>
+  </div>
+</div>
+
+<div class="grid-wrapper">
+  <div class="grid" id="cardGrid"></div>
+</div>
+
+<div class="backdrop" id="backdrop" onclick="handleBackdrop(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header" id="modalHeader">
+      <div class="modal-header-top">
+        <div class="modal-icon" id="mIcon"></div>
+        <div class="modal-title-block">
+          <h2 id="mTitle"></h2>
+          <div class="modal-sub" id="mSub"></div>
+        </div>
+        <button class="modal-close" onclick="closeModal()">&#x2715;</button>
+      </div>
+      <div class="metric-chips" id="mChips"></div>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-footer">
+      <div class="footer-nav">
+        <button class="nav-btn" id="btnPrev" onclick="navigate(-1)">&#8592; Prev</button>
+        <span class="footer-counter" id="footerCounter"></span>
+        <button class="nav-btn" id="btnNext" onclick="navigate(1)">Next &#8594;</button>
+      </div>
+      <div class="footer-sources">Sources: SAP Sapphire 2024/2025 &middot; SAP SuccessFactors Roadmap 2025 &middot; Saudi Vision 2030 &middot; SAP Benchmark 2024</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const GROUP_COLORS={emp:'#0070F2',lc:'#EA580C',tal:'#059669',mgr:'#7C3AED',lrn:'#D97706',pm:'#DC2626'};
+const GROUP_LABELS={emp:'Employee Experience',lc:'Employee Lifecycle',tal:'Talent & Recruitment',mgr:'Manager & Workforce',lrn:'Learning & Development',pm:'Performance Management'};
+const AI_COLORS={ML:'#0070F2',Agents:'#059669',GenAI:'#7C3AED',Vision:'#7C3AED',Analytics:'#D97706'};
+const SELECTED_UCS=new Set(['UC01','UC02','UC03','UC04','UC05','UC06','UC07','UC08','UC09','UC10','UC11']);
+
+const UC=[
+['UC01','emp','🤖','Interactive & Predictive Employee Services',
+"Saudi Energy's employees currently search for HR services themselves in a fully reactive process — identifying a need, searching for the appropriate service, determining what to do, and manually initiating the relevant workflow. With 70,000+ employees spanning diverse functions, the manual search-and-initiate model creates delays, inconsistent experiences, and high volumes of HR inquiries that consume HRBP capacity. There is no proactive layer that anticipates needs based on career events, performance milestones, or organizational context.",
+'★★★★★ Transformative','SAP SuccessFactors, SAP Joule, SAP AI Core, SAP BTP',5,4,'Agents'],
+
+['UC02','lc','🚪','Intelligent Employee Offboarding & Separation',
+"Employee separation at Saudi Energy requires coordinated execution of multiple activities across numerous stakeholders — notice periods, SLA compliance, knowledge transfer, badge and system access revocation, financial settlement calculations, and executive-specific offboarding requirements. The process involves significant manual effort across HR, IT, Payroll, and line management with no central agent to track completion, enforce deadlines, or escalate overdue activities. Variation by employee type, role, and separation circumstances makes manual coordination error-prone and SLA adherence difficult to guarantee.",
+'★★★★★ Very High','SAP SuccessFactors, SAP Joule, SAP AI Core, SAP BTP',4,4,'Agents'],
+
+['UC03','tal','🔄','Internal Talent Mobility & Vacancy Matching',
+"Saudi Energy employees seeking internal career opportunities navigate multiple manual steps with no intelligent connection between their profile and available roles. The current self-service platform requires employees to search job requisitions manually — without AI matching against skills, experience, and career aspirations. This disconnected approach underutilizes internal talent and creates excessive reliance on external hiring, directly undermining the Saudization and internal career development objectives central to Saudi Energy's workforce strategy.",
+'★★★★☆ High','SAP SuccessFactors Recruiting, SAP AI Core, SAP Joule',4,3,'Agents'],
+
+['UC04','lc','🔀','Intelligent Employee Transfer & Role Alignment',
+"When Saudi Energy employees transfer between roles or organizational units, multiple coordinated activities must execute simultaneously — offboarding from old responsibilities, onboarding into new ones, job description alignment, competency gap identification, and SuccessFactors record updates. Manual coordination treats these as sequential disconnected steps rather than a unified AI-orchestrated transition, creating productivity gaps, delayed system updates, and missed development opportunities during role change periods.",
+'★★★★☆ High','SAP SuccessFactors, SAP AI Core, SAP Joule, SAP BTP',4,4,'Agents'],
+
+['UC05','mgr','🗼','Manager Copilot & Organizational Control Tower',
+"Saudi Energy managers lack a unified real-time view of HR activity across their organization. Information on open recruitment, leave, performance cycles, transfers, pending approvals, and workforce exceptions is fragmented across multiple SuccessFactors modules requiring manual monitoring without AI aggregation or proactive alerting. Managers respond reactively to HR events rather than managing by exception, missing early warning signals for coverage gaps, SLA breaches, and workforce risks that could be addressed proactively.",
+'★★★★★ Transformative','SAP SuccessFactors, SAP Joule, SAP AI Core, SAP Analytics Cloud',5,4,'Agents'],
+
+['UC06','tal','🔍','Intelligent Candidate Screening & Shortlisting',
+"Saudi Energy recruiters manually filter through high volumes of job applications — comparing candidate profiles against vacancy requirements, applying eligibility criteria, Saudization targets, and equal-opportunity guardrails one application at a time. Without AI, the screening process creates significant bottlenecks, evaluation inconsistency, and inability to process applications at scale while maintaining full auditability and compliance with Saudi hiring regulations, organizational hiring policies, and nationalization commitments.",
+'★★★★★ Very High','SAP SuccessFactors Recruiting, SAP AI Core, SAP Joule',5,5,'Agents'],
+
+['UC07','lrn','🎓','Personalized Learning & Skills Development',
+"Learning Administrators manually review 70,000+ Saudi Energy employees to assign required training and recommend development programs based on role and skills alone. Generic, manually assigned learning paths fail to account for individual performance history, career goals, and precise skill gaps — delivering irrelevant training that employees disengage from while failing to align workforce capability development with Saudi Energy's strategic objectives and Saudi Vision 2030 Saudization and nationalization imperatives.",
+'★★★★★ Transformative','SAP SuccessFactors Learning, SAP AI Core, SAP Joule',5,4,'ML'],
+
+['UC08','mgr','📅','Intelligent Leave & Workforce Availability Management',
+"Saudi Energy's leave approval process has no AI awareness of team coverage impact. When an employee applies for leave, the manager approves without visibility into concurrent absences, backup availability, or critical role coverage gaps — the system issues no alert about operational risk. In Saudi Energy's shift-based and operations-critical functions, unplanned staffing gaps from uninformed leave approvals carry direct business continuity risk that only becomes visible after the fact.",
+'★★★★☆ High','SAP SuccessFactors Time, SAP AI Core, SAP Joule, SAP Analytics Cloud',3,4,'Agents'],
+
+['UC09','pm','🎯','Performance Objective Validation & Governance',
+"PM Champions at Saudi Energy manually validate all employee objectives — checking SMART criteria compliance, organizational goal alignment, weight distribution correctness, and delivery date validity for 70,000+ employees across every sector. This manual governance bottleneck creates multi-week delays in the performance cycle, inconsistency between departments, and an unsustainable administrative burden on PMSS teams and HRBPs that prevents focus on strategic performance quality rather than administrative checking.",
+'★★★★★ Very High','SAP SuccessFactors Performance & Goals, SAP AI Core, SAP Joule',4,5,'GenAI'],
+
+['UC10','pm','🏆','Autonomous End-to-End Performance Management',
+"Multiple end-to-end performance management activities at Saudi Energy remain fully manual: launching planning forms for new joiners and job transfers, moving forms between cycle steps, validating SMART goal quality, generating goal suggestions, and producing sector-wide status reports. These manual activities spread across PMSS teams, HRBPs, PM Champions, and all company sectors — creating cycle delays, cross-sector inconsistency, and administrative overhead that reduces time available for meaningful performance conversations and coaching.",
+'★★★★★ Transformative','SAP SuccessFactors Performance & Goals, SAP AI Core, SAP Joule, SAP BTP',5,4,'Agents'],
+
+['UC11','pm','🔁','Automated Goal Management for Role Change',
+"Every time a Saudi Energy employee changes role — through a transfer, promotion, or job change — their performance goals require manual intervention: PMSS teams manually generate new SuccessFactors forms, managers manually validate SMART criteria, and a BM Champion manually reviews, approves, and routes goal submissions. This multi-step manual process creates delays in goal-setting during every role transition, inconsistent SMART compliance across the organization, and an avoidable administrative bottleneck that the SAP Autonomous Enterprise roadmap is specifically designed to eliminate.",
+'★★★★★ Very High','SAP SuccessFactors Performance & Goals, SAP Joule, SAP AI Core, SAP BTP',4,5,'Agents']
+];
+
+const PERSONAS={
+emp:[
+  ['CHRO / VP Human Resources','Drive the transformation from reactive HR service delivery to proactive AI-assisted employee experience across Saudi Energy\'s 70,000+ workforce, supporting Vision 2030 talent objectives'],
+  ['HR Business Partner','Deliver personalized employee guidance, reduce HR inquiry volume, and ensure every employee receives the right service at the right time without manual intervention'],
+  ['Employee','Access any HR service instantly through a conversational AI agent that understands needs, predicts next steps, and executes actions autonomously']
+],
+lc:[
+  ['HR Operations Manager','Ensure all employee lifecycle transitions — separations and transfers — are executed on time, compliant with Saudi labor law, and free of manual coordination gaps'],
+  ['Line Manager','Receive automated guidance on employee transition requirements, approve actions efficiently, and maintain team continuity during separations and role changes'],
+  ['HR Business Partner','Coordinate knowledge transfer, financial settlements, and compliance activities across all separation and transfer types with AI-driven checklists and automated SLA tracking']
+],
+tal:[
+  ['Talent Acquisition Director','Reduce time-to-hire, increase internal mobility utilization, and ensure every candidate evaluation is consistent, auditable, Saudization-compliant, and criteria-driven at scale'],
+  ['Recruiter','Focus on high-value hiring decisions while AI handles thousands of application screening, matching, shortlisting, and ranking with full explainability and governance'],
+  ['Hiring Manager','Receive AI-ranked shortlists with clear reasoning, access vacancy-matched internal candidates first, and maintain full governance over final hiring decisions']
+],
+mgr:[
+  ['Department Manager','Maintain real-time awareness of all HR activities across direct reports — leave, performance, recruitment, transfers, approvals — through a unified AI-powered organizational control tower'],
+  ['Section Head','Approve leave and workforce actions with full coverage intelligence, preventing unplanned gaps in critical operational and shift-based functions across Saudi Energy'],
+  ['HR Director','Monitor organizational workforce health, pending HR activities, and exception-driven insights across all Saudi Energy business units in real time without manual data aggregation']
+],
+lrn:[
+  ['Chief Learning Officer','Scale personalized development across 70,000+ employees without proportional L&D headcount increase, aligning workforce skills with Saudi Vision 2030 objectives and Saudization targets'],
+  ['Learning & Development Manager','Replace manual training assignment with continuous AI-driven learning pathway recommendations tailored to each employee\'s role, performance history, and individual career goals'],
+  ['Employee','Receive a personalized learning journey that adapts to individual skill gaps, performance feedback, and career aspirations — eliminating generic mandatory training assignments']
+],
+pm:[
+  ['PMSS Team','Eliminate manual performance form administration, launch, and governance — allowing the team to focus on strategic performance quality rather than administrative cycle management overhead'],
+  ['HR Business Partner','Ensure performance objective quality and organizational alignment across all sectors without requiring manual PM Champion intervention in every submission cycle'],
+  ['Manager','Set high-quality, SMART-validated objectives with AI assistance, receive automated form progression, and complete performance cycles faster with significantly less administrative friction']
+]
+};
+
+const VALUE_BULLETS={
+emp:[
+  '🤖 HR self-service completion rate increases from under 40% to 90%+ as the Interactive Agent guides employees through the right service for their specific situation in real time',
+  '⚡ Employee HR request resolution time drops from days to hours as the Predictive Agent anticipates needs before employees search, eliminating the reactive service model entirely',
+  '📊 HR Business Partner workload reduced 40%+ as routine inquiries, service initiation, and process guidance are handled autonomously by the coordinated agent system',
+  '🎯 Next-best-action accuracy exceeds 92% as the Predictive Agent learns from organizational context, lifecycle events, and historical service patterns across Saudi Energy\'s workforce',
+  '🤝 Employee satisfaction with HR services improves measurably as every interaction becomes proactive, personalized, and outcome-focused rather than form-driven and reactive'
+],
+lc:[
+  '🚪 Employee separation process completion within SLA improves from 65% to 98%+ through automated checklist generation, stakeholder coordination, and deadline tracking',
+  '🔀 Transfer transitions reduced from 2–3 weeks to under 3 days as AI simultaneously initiates offboarding from the old role and onboarding into the new role without sequential delays',
+  '✅ Knowledge transfer completion rate reaches 99% as AI tracks all required handover activities and escalates overdue items before the separation date is reached',
+  '🔐 Badge and system access revocation executed automatically within hours of separation — eliminating compliance risk from delayed access termination across Saudi Energy\'s systems',
+  '💰 Financial obligation calculations and payroll trigger accuracy reaches 100% through AI validation of all separation entitlements before HR sign-off'
+],
+tal:[
+  '🔍 Candidate screening time reduced from weeks to hours — thousands of applications processed by AI with consistent criteria application across every applicant simultaneously',
+  '🔄 Internal mobility rate increases 35%+ as the AI career marketplace proactively surfaces relevant vacancies based on skills, experience, and stated aspirations',
+  '📊 Recruiter time shifted from screening to decision-making — AI delivers ranked shortlists with reasoning, enabling focus on cultural fit and final selection',
+  '⚖️ Hiring consistency and compliance improved through AI guardrails enforcing equal-opportunity requirements, Saudization targets, and hiring policy criteria on every application',
+  '⚡ Time-to-shortlist reduced 80%+ as AI matching engine evaluates candidate-job fit across skills, experience, qualifications, and eligibility in minutes rather than weeks'
+],
+mgr:[
+  '🗼 Managers gain a single unified view of all HR activities — recruitment, leave, transfers, performance, approvals — without switching between multiple SuccessFactors modules',
+  '📅 Leave approval decisions become fully informed — AI coverage gap analysis prevents unplanned operational shortfalls across Saudi Energy\'s critical functions and shift operations',
+  '⚡ Manager response time to HR exceptions reduced 60%+ as AI proactively surfaces what requires action with clear next-best-action recommendations before deadlines are breached',
+  '🎯 Organizational risk visibility improves dramatically — managers receive early warnings for upcoming deadlines, workforce issues, and SLA breaches before they impact the business',
+  '📊 Management reporting automated — AI generates real-time organizational health dashboards without manual data aggregation or analyst preparation time'
+],
+lrn:[
+  '🎓 70,000+ employees receive personalized learning pathways automatically — replacing manual Learning Admin assignment with continuous AI-driven skills development at enterprise scale',
+  '📈 Skill gap closure rate improves 50%+ as AI identifies precise development needs by cross-referencing role requirements, performance data, and individual career goals',
+  '⚡ Learning assignment cycle time reduced from weeks to minutes as AI continuously evaluates and updates each employee\'s recommended pathway without manual review cycles',
+  '🎯 Training relevance scores increase significantly — employees receive role-specific, performance-informed learning rather than generic mandatory programs with low engagement',
+  '🔗 Learning outcomes align directly with Saudi Vision 2030 workforce capabilities as AI maps organizational objectives to individual development plans across all Saudi Energy sectors'
+],
+pm:[
+  '✅ PM Champion manual validation workload eliminated — AI validates objective completeness, SMART criteria, alignment, weights, and dates for all 70,000+ employees automatically',
+  '⚡ Performance planning cycle compressed from months to weeks as AI validates and advances forms automatically without manual PM Champion intervention at each step',
+  '🎯 SMART goal compliance reaches 95%+ as AI validates every objective against Specific, Measurable, Achievable, Relevant, and Time-bound criteria before submission is accepted',
+  '📊 AI generates goal suggestions aligned from corporate strategy through organizational goals, job descriptions, to individual employee targets — consistent cascade across all sectors',
+  '🔄 Automated form launching for new joiners, transfers, and role changes eliminates manual PMSS workload — AI detects lifecycle events and initiates the correct form within hours'
+]
+};
+
+const SE_BULLETS={
+emp:['▸ Saudi Energy\'s 70,000+ workforce spans diverse roles across energy generation, distribution, and corporate functions — AI-personalized HR services must handle this complexity at scale','▸ Saudi Vision 2030 places employee experience and Saudization at the center of the transformation agenda — AI-powered HR services directly support these strategic priorities','▸ Proactive HR service delivery reduces attrition by improving employee satisfaction — critical for retaining Saudi Energy\'s specialized technical and engineering talent'],
+lc:['▸ Saudi Energy\'s workforce includes Saudi nationals, expatriates, and executives with fundamentally different separation processes — AI context-awareness is essential for full legal compliance','▸ Saudi labor law requires precise sequencing of separation activities — AI-orchestrated offboarding eliminates the legal risk of missed or delayed obligations under KSA Labor Law','▸ Knowledge transfer from specialized technical employees is a strategic risk — AI-tracked offboarding ensures institutional knowledge is captured before every departure'],
+tal:['▸ Saudi Energy\'s hiring volumes make manual screening operationally impossible to execute consistently and quickly — AI is the only way to maintain quality and speed at scale','▸ Saudization targets and Nitaqat compliance require consistent, auditable, policy-compliant screening — AI guardrails ensure every hiring decision is regulatorily defensible','▸ Internal mobility is a strategic priority — AI career matching reduces external hiring costs while building and retaining existing Saudi talent'],
+mgr:['▸ Saudi Energy\'s organizational complexity spans multiple business units, departments, and locations — managers cannot maintain situational awareness without AI-level data aggregation','▸ Shift-based and operations-critical roles require precise leave coverage management — unplanned staffing gaps carry direct business continuity and safety implications','▸ Saudi Energy\'s management cadre handles high volumes of HR approvals — AI-driven management by exception frees senior time for strategic decisions'],
+lrn:['▸ Saudi Vision 2030\'s Saudization targets require accelerated upskilling of Saudi nationals — AI-personalized learning at scale is the only viable approach across 70,000+ employees','▸ Energy sector technical competencies evolve rapidly — AI continuous skill gap monitoring ensures the workforce stays current with emerging technologies and requirements','▸ Generic training programs have low completion and retention rates — AI-personalized pathways aligned to individual career goals dramatically improve learning ROI'],
+pm:['▸ Saudi Energy\'s 70,000+ employees across all sectors require consistent, fair performance cycle management — manual PM Champion oversight cannot scale to this volume without AI','▸ Corporate strategy cascade from national energy objectives to individual employee goals requires AI-assisted alignment — manual goal-setting misses the Vision 2030 connection','▸ Delayed performance cycles affect compensation, promotion, and retention decisions — AI automation directly protects Saudi Energy\'s talent pipeline and workforce planning accuracy']
+};
+
+const AI_HOW={
+UC01:['🤖 Interactive Employee Agent receives employee requests through any channel — HR portal, mobile, or chat — understanding intent in natural language, disambiguating the request, and identifying the exact SuccessFactors service required without the employee needing to know which module or process applies to their situation','🔮 Predictive Agent continuously monitors employee context — upcoming lifecycle events, contract milestones, performance cycle dates, leave balances, and open HR actions — proactively surfacing relevant services before the employee searches, transforming reactive HR into anticipatory support for every individual','⚡ Service Execution Agent translates recommendations into direct SAP SuccessFactors actions — initiating requests, completing forms, routing approvals, and confirming outcomes — so the employee confirms rather than executes, shifting from a 5-step search-and-navigate process to a single confirmation interaction','📊 The coordinated agent system builds an organizational intelligence layer in SAP AI Core — learning which services are needed at each career stage, role transition, and lifecycle event to continuously improve prediction accuracy across Saudi Energy\'s entire workforce'],
+UC02:['🚪 Employee Separation Agent automatically detects separation events in SAP SuccessFactors — resignation, termination, retirement, or involuntary separation — and instantly determines the applicable process based on employee type, role level, notice period, and Saudi labor law requirements for each specific case','📋 AI generates a complete, role-specific offboarding checklist covering knowledge transfer milestones, badge and system access revocation, asset return, financial settlement calculations, GOSI documentation, and regulatory compliance activities — customized for each employee\'s contract type and seniority','⚡ Coordination Agent manages all stakeholders in parallel — notifying IT for access revocation, Payroll for final settlement, the line manager for knowledge transfer, and Facilities for asset return — tracking every activity against SLA with automatic escalation of overdue items','📊 Separation analytics provide HR Operations with real-time visibility into offboarding pipeline status, SLA compliance rates, outstanding activities by department, and completion trend reporting — replacing manual tracking with automated dashboards across all Saudi Energy business units'],
+UC03:['🔄 Internal Talent Agent analyzes the complete employee profile in SAP SuccessFactors — current role, business unit, skills inventory, experience history, performance ratings, and career aspirations — to build a precise competency map for intelligent vacancy matching across the organization','🎯 AI matches employee profiles against all open requisitions across Saudi Energy\'s organizational structure, calculating a fit score for each vacancy based on skills alignment, experience relevance, business unit proximity, and career path logic — surfacing relevant opportunities the employee may not have discovered independently','⚡ Once an employee selects an opportunity, the Recruitment Agent automatically initiates the appropriate recruitment process — triggering the application workflow, notifying the hiring manager, and scheduling next steps within SAP SuccessFactors Recruiting without any manual HR coordination','📊 Internal mobility analytics track match rates, conversion rates from AI recommendations to applications, interview outcomes, and career progression patterns — providing Talent Acquisition with data-driven insights to improve Saudi Energy\'s internal career marketplace effectiveness'],
+UC04:['🔀 Employee Transfer Agent detects transfer events in SAP SuccessFactors and simultaneously analyzes the employee\'s current role competencies against target role requirements — computing a suitability score and identifying competency gaps before the transfer approval is sought','🎯 AI presents the approving manager with a transfer readiness assessment — showing fit score, gap analysis, recommended pre-transfer development actions, and knowledge transfer requirements — enabling informed approval decisions rather than purely administrative sign-off','⚡ Upon approval, the Transfer Agent orchestrates dual-track execution: offboarding from the existing role (knowledge capture, responsibility handover, access updates) and onboarding into the new role (orientation, access provisioning, objective alignment) run simultaneously rather than sequentially','📊 AI updates all relevant SAP SuccessFactors records automatically — position, reporting line, job description, competency profile, performance form — and coordinates associated payroll and compensation adjustments, eliminating manual data entry across multiple HR modules'],
+UC05:['🗼 Manager Control Tower Agent continuously aggregates all HR activity across the manager\'s organization from SAP SuccessFactors — open recruitment requisitions, pending transfers, approved leave, performance cycle status, outstanding approvals, and workforce exceptions — presenting a single unified view updated in real time','⚠️ Proactive Monitoring Agent continuously scans for organizational risks and approaching deadlines — leave coverage gaps, overdue performance submissions, SLA breaches in recruitment, pending approvals past deadline — and surfaces them to the manager with full impact context before they become problems','⚡ Next-Best-Action Engine translates every exception into a clear management recommendation: what happened, why it matters, what the manager should do, and what happens if no action is taken — converting raw HR data into management decisions rather than administrative notifications','📊 Automated organizational reporting replaces manual data preparation — the Manager AI generates weekly org health summaries, headcount trend analysis, workforce risk indicators, and approval backlog reports automatically, delivered without analyst involvement or manual SuccessFactors report building'],
+UC06:['🔍 Job Requisition Analysis Agent parses the complete vacancy requirements from SAP SuccessFactors Recruiting — extracting role responsibilities, required skills, experience thresholds, qualification criteria, Saudization requirements, and Saudi Energy hiring policy rules — to build a precise, auditable evaluation framework before any screening begins','⚖️ Governance Engine applies hiring policy guardrails, equal-opportunity requirements, Saudization targets, Nitaqat compliance criteria, and regulatory obligations to every evaluation — ensuring the AI screening is fully defensible, consistently applied, and protected against bias before any candidate scoring proceeds','⚡ AI Screening Agent evaluates all applications simultaneously against the established criteria — analyzing skills match, experience relevance, qualification verification, and eligibility — producing a scored ranking with explainable reasoning for every candidate so recruiters can understand, challenge, and audit every recommendation','📊 Ranked shortlist is delivered to the recruiter with candidate fit scores, strengths summary, identified gaps, and transparent scoring rationale — enabling fast, informed shortlisting decisions while maintaining full audit trail for every application evaluated across Saudi Energy\'s complete recruitment process'],
+UC07:['🎓 Personalized Learning Agent builds a complete competency profile for each of Saudi Energy\'s 70,000+ employees by cross-referencing role requirements, current skills inventory, performance review outcomes, career goals, and organizational capability priorities — identifying precise skill gaps at the individual level','🎯 AI recommends specific learning interventions from the SAP SuccessFactors Learning catalog tailored to each employee\'s gap profile — matching content format, difficulty level, and completion time to the employee\'s learning history, creating a personalized development pathway rather than a generic training list','⚡ Learning Pathway Agent continuously adapts recommendations as the employee completes training, receives new performance feedback, changes roles, or updates career aspirations — ensuring the learning journey evolves with the employee rather than remaining static until the next manual L&D review cycle','📊 Learning analytics provide L&D leadership with real-time visibility into skill gap closure rates by department, training completion trends, learning outcome effectiveness, and workforce capability development aligned to Saudi Energy\'s strategic requirements and Vision 2030 objectives'],
+UC08:['📅 Leave Impact Agent automatically evaluates every leave request against the team\'s operational context before it reaches the manager for approval — checking the team calendar, existing approved leave, critical role coverage, backup availability by skill, and business continuity requirements for the exact requested dates','⚠️ AI warns the approving manager with specific operational impact data: "Approving this leave will result in no available backup for [critical function] for [X] days, coinciding with [project / scheduled operation]" — transforming leave approval from an administrative sign-off into an informed workforce planning decision','⚡ When coverage gaps are detected, the AI proactively recommends alternatives — adjusted leave dates with lower operational impact, available backup employees with matching skills, or partial leave approval with defined coverage arrangements — giving the manager actionable options rather than a binary approve/reject choice','📊 Workforce availability analytics provide managers and HR with aggregated visibility into leave patterns, coverage risk periods, backup utilization rates, and team availability forecasts — enabling proactive workforce planning before critical operational periods'],
+UC09:['🎯 Performance Objective Validation Agent automatically reviews every submitted objective set in SAP SuccessFactors Performance & Goals — checking completeness, SMART criteria compliance (Specific, Measurable, Achievable, Relevant, Time-bound), and alignment with organizational objectives before any PM Champion review is required','✅ AI validates weight distribution across all objectives to ensure totals sum correctly, identifies duplicated or contradictory objectives, flags delivery dates that conflict with cycle milestones, and detects objectives misaligned with the employee\'s job description or business unit strategic priorities','⚡ Exceptions are immediately returned to the manager or employee with specific, actionable correction guidance — "Objective 3 lacks a measurable success metric; suggested revision: [AI-generated example]" — enabling immediate correction and resubmission without PM Champion involvement for standard validation cases','📊 AI generates sector-wide compliance dashboards showing objective quality scores, SMART compliance rates, submission completion percentages, and exception patterns by department — giving PMSS Team and HRBPs real-time governance visibility without manual data collection from PM Champions'],
+UC10:['🤖 Performance Management Automation Agent continuously monitors SAP SuccessFactors for employee lifecycle events — new joiner start dates, transfer effective dates, job changes — and automatically generates the appropriate performance planning form within hours of the event, replacing all manual PMSS team form launching activity','🎯 AI generates personalized goal suggestions for each employee based on the cascade from corporate strategy through organizational objectives, business unit targets, and job description requirements — providing a pre-populated, strategically aligned starting point rather than a blank form','⚡ Form Progression Agent automatically advances performance forms through each cycle step based on completion status and cycle dates — moving forms from planning to mid-year to year-end without manual intervention, delimiting old forms when role changes occur, and routing to the correct approver at each stage','📊 Automated sector reporting replaces manual PMSS report generation — AI compiles and distributes performance cycle status reports across all Saudi Energy sectors with completion rates, exception counts, goal quality metrics, and cycle adherence statistics to HRBP, PMSS, and executive leadership automatically'],
+UC11:['🔁 Role Change Detection Agent monitors SAP SuccessFactors in real time for transfer, promotion, and job change events — automatically generating the corresponding performance form for the employee\'s new role within hours of the event, replacing the manual PMSS form-launching step and eliminating the lag between role change and goal-setting initiation','🎯 AI Understands New Role Agent analyzes the target position\'s responsibilities, competencies, and business objectives from the job description and organizational goal cascade — building the contextual foundation needed to generate relevant, strategically aligned performance goals for the new role rather than recycling goals from the old position','✅ SMART Validation & Improvement Agent evaluates every goal against Specific, Measurable, Achievable, Relevant, and Time-bound criteria — automatically flagging non-compliant goals with targeted improvement suggestions and eliminating the manual BM Champion validation step that previously bottlenecked every role transition in Saudi Energy\'s performance cycle','📊 Automated Reporting Agent generates real-time dashboards showing goal-setting status by employee, SMART compliance rates, BM Champion step elimination metrics, and adoption analytics across all role changes — replacing manual PMSS reporting with autonomous insights delivered to HRBP and management without any data preparation effort']
+};
+
+const OOB={
+UC01:{pct:75,level:'HIGH',covered:['SAP Joule for SuccessFactors — conversational HR assistant embedded OOB across Employee Central, Recruiting, and Performance (Sapphire 2024, GA 2025)','SAP AI Core recommendation engine — next-best-action framework for HR services (configurable OOB)','SAP SuccessFactors guided workflows — intelligent form navigation and contextual help OOB','SAP Autonomous Enterprise: Proactive Employee Agent announced for SuccessFactors (roadmap H2 2026)'],custom:['Predictive proactive service push (not just reactive Joule response) — anticipating needs before employee searches','Service Execution Agent with multi-step orchestration across SuccessFactors modules','Saudi Energy-specific HR service catalog integration and process automation','Cross-event prediction model trained on Saudi Energy organizational lifecycle patterns']},
+UC02:{pct:40,level:'MEDIUM',covered:['SAP SuccessFactors Onboarding 2.0 — offboarding workflow framework with task management OOB','SAP Build Process Automation — checklist orchestration and stakeholder notification framework','Joule for SuccessFactors — offboarding guidance assistant and checklist explanation (Sapphire 2025)','SAP SuccessFactors standard offboarding task library (configurable OOB)'],custom:['AI context-aware checklist generation by employee type, level, and Saudi labor law classification','Knowledge transfer tracking and completeness scoring agent','Multi-stakeholder parallel coordination with SLA enforcement and automated escalation','GOSI and Saudi regulatory compliance documentation automation']},
+UC03:{pct:60,level:'MEDIUM',covered:['SAP SuccessFactors Opportunity Marketplace — AI-powered internal job matching OOB (GA 2024)','SAP SuccessFactors Career Development — suggested opportunities based on career aspirations OOB','Joule for Recruiting — vacancy summary and candidate-role match explanation (Sapphire 2024)','SAP Autonomous Enterprise: Internal Career Agent for SuccessFactors (roadmap Q1 2027)'],custom:['Proactive AI vacancy surfacing (push model rather than employee-initiated search)','Saudi Energy organizational hierarchy proximity matching and Saudization opportunity filtering','Automatic recruitment process initiation and hiring manager notification on employee interest','Internal mobility analytics dashboard with conversion rate and career progression tracking']},
+UC04:{pct:35,level:'LOW',covered:['SAP SuccessFactors Position Management — transfer workflow framework and position change processing OOB','SAP Build Process Automation — transfer approval routing framework','SAP SuccessFactors Onboarding 2.0 — new role onboarding task management (partially applicable)'],custom:['AI competency gap analysis agent comparing current vs. target role requirements','Transfer readiness scoring with suitability assessment and development gap recommendations','Dual-track simultaneous offboarding and onboarding orchestration (not sequential)','Automated SuccessFactors record synchronization across all modules on transfer completion']},
+UC05:{pct:50,level:'MEDIUM',covered:['Joule for SuccessFactors Manager Experience — team overview assistant and pending action summary OOB (Sapphire 2024)','SAP Analytics Cloud People Analytics — HR dashboard with workforce KPIs and organizational metrics OOB','SAP SuccessFactors Team View — manager dashboard for leave, performance, and team status (OOB)','SAP Autonomous Enterprise: Manager AI Agent for proactive organizational monitoring (roadmap 2026)'],custom:['Unified cross-module aggregation extending beyond SuccessFactors to connected HR systems','Next-best-action recommendation engine with impact analysis and consequence framing','Proactive risk detection — connecting coverage gaps, SLA breaches, and workforce risks into a prioritized action queue','Saudi Energy org structure-aware exception routing and escalation intelligence']},
+UC06:{pct:65,level:'MEDIUM',covered:['SAP SuccessFactors Recruiting AI — resume screening and AI match scoring OOB (Sapphire 2024, enhanced 2025)','Joule for Recruiting — candidate profile summarization and fit explanation (GA 2025)','SAP Business Network — candidate background and profile enrichment integration OOB','SAP Autonomous Enterprise: AI Candidate Screening Agent for high-volume applications (roadmap Q3 2026)'],custom:['Saudi-specific Saudization and Nitaqat compliance guardrails enforced at scoring layer','50,000+ application scale processing with full explainability and audit trail per candidate','Saudi Energy hiring policy rules integration into AI evaluation criteria framework','Equal-opportunity governance engine with regulatory compliance validation and reporting']},
+UC07:{pct:60,level:'MEDIUM',covered:['SAP SuccessFactors Learning — AI-powered course recommendations based on role and skills OOB','SAP SuccessFactors Skills ontology — skill gap analysis and learning content matching OOB (2024)','Joule for Learning — personalized content suggestions and learning pathway guidance (Sapphire 2025)','SAP Autonomous Enterprise: Personalized Learning Agent announced for SuccessFactors LMS (roadmap 2026)'],custom:['Cross-module intelligence fusion: performance review + goal data + skills + career aspirations into one profile','70,000+ employee real-time personalization at scale with continuous pathway adaptation','Saudi Vision 2030 and organizational strategic capability alignment mapping per recommendation','Learning outcome effectiveness scoring tied back to performance and skills closure metrics']},
+UC08:{pct:25,level:'LOW',covered:['SAP SuccessFactors Time Off — leave balance checking and team absence calendar visibility OOB','SAP Build Process Automation — leave approval workflow with manager notification framework','SAP SuccessFactors standard leave conflict detection (same-day check, basic team calendar OOB)'],custom:['AI coverage gap analysis before approval — evaluating backup availability, skill coverage, and business continuity','Operational impact severity scoring by role criticality and function type','Alternative leave recommendation agent with coverage arrangement suggestions','Predictive workforce availability forecasting for proactive planning before critical operational periods']},
+UC09:{pct:55,level:'MEDIUM',covered:['Joule for SuccessFactors Performance — AI-assisted goal writing and SMART improvement suggestions OOB (Sapphire 2024, GA 2025)','SAP SuccessFactors Goal Management — organizational goal cascade and alignment framework OOB','SAP Autonomous Enterprise: Performance Governance AI Agent for automated objective validation (roadmap Q3 2026)','SAP AI Core: NLP-based goal quality scoring (configurable, requires Saudi Energy goal taxonomy)'],custom:['Automated PM Champion replacement — full end-to-end validation without requiring human governance step','Saudi Energy goal taxonomy, organizational objective library, and sector-specific alignment rules','Weight distribution and cross-objective consistency validation across the full submission set','Sector-wide SMART compliance dashboards and governance reporting for PMSS and HRBP leadership']},
+UC10:{pct:45,level:'MEDIUM',covered:['SAP SuccessFactors Performance & Goals — event-triggered form launching framework (configurable with SAP BTP events)','Joule for Performance — goal generation assistance and form guidance OOB (GA 2025)','SAP SuccessFactors standard form routing and workflow progression (configurable OOB)','SAP Autonomous Enterprise: Autonomous PM Lifecycle Agent announced for SuccessFactors (roadmap H1 2027)'],custom:['Fully autonomous form lifecycle management: new joiner detection, transfer event response, job change handling','AI goal cascade generation from corporate strategy through organizational objectives to individual employee goals','Automated old-form delimiting and new-form initialization with zero PMSS manual intervention','Autonomous sector-wide report generation and distribution replacing manual PMSS reporting workflows']},
+UC11:{pct:70,level:'HIGH',covered:['Joule for SuccessFactors Performance — AI-assisted goal writing, SMART improvement suggestions, and goal recommendations OOB (Sapphire 2024, GA 2025)','SAP SuccessFactors event-driven form launching — triggered by role change lifecycle events (configurable OOB with BTP)','SAP Autonomous Enterprise: Role Change Performance Agent specifically announced for SuccessFactors (roadmap H1 2026)','SAP AI Core SMART criteria validation framework applicable to SF goal data (configurable OOB)'],custom:['BM Champion step complete elimination — full autonomous validation replacing the human governance touchpoint','AI New Role Understanding Agent trained on Saudi Energy job description library and organizational objective hierarchy','Saudi Energy-specific role taxonomy and business objective cascade for contextual goal generation','Cross-role goal continuity analysis identifying what carries over vs. requires new goals on every role transition']}
+};
+
+function countStars(s){let c=0;for(let ch of s)if(ch==='★')c++;return c;}
+function starsLabel(s){return s.split(' ')[0];}
+function getGroupColor(grp){return GROUP_COLORS[grp]||'#64748B';}
+function getAIColor(ai){return AI_COLORS[ai]||'#64748B';}
+
+function buildCards(){
+  const grid=document.getElementById('cardGrid');
+  grid.innerHTML='';
+  UC.forEach((uc,i)=>{
+    const [id,grp,icon,title,challenge,stars,sap,impact,speed,aiType]=uc;
+    const gc=getGroupColor(grp);
+    const aiC=getAIColor(aiType);
+    const starsHtml=starsLabel(stars);
+    const impactPct=Math.round((impact/5)*100);
+    const speedPct=Math.round((speed/5)*100);
+    const isSelected=SELECTED_UCS.has(id);
+    const oob=OOB[id];
+    const card=document.createElement('div');
+    card.className='card';
+    card.dataset.grp=grp;
+    card.dataset.idx=i;
+    card.onclick=()=>openModal(i);
+    card.innerHTML=`
+      <div class="card-top-border" style="background:${gc}"></div>
+      <div class="card-header">
+        <div class="card-icon">${icon}</div>
+        <div class="card-id">${id}</div>
+        <div class="ai-pill ai-${aiType}">${aiType}</div>
+        ${isSelected?'<div class="selected-badge">&#10003; Customer Pick</div>':''}
+        ${oob?`<div class="oob-chip oob-${oob.level}">${oob.level==='HIGH'?'🟢':oob.level==='MEDIUM'?'🟡':'🔴'} OOB ${oob.pct}%</div>`:''}
+      </div>
+      <div class="card-title">${title}</div>
+      <div class="group-pill gpill-${grp}">${GROUP_LABELS[grp]}</div>
+      <div class="card-challenge">${challenge}</div>
+      <div class="card-stars">${starsHtml}&nbsp;<span style="color:#94A3B8;font-size:11px">${stars.split(' ').slice(1).join(' ')}</span></div>
+      <div class="bar-row"><div class="bar-label">Impact</div><div class="bar-track"><div class="bar-fill" style="width:${impactPct}%;background:${gc}"></div></div></div>
+      <div class="bar-row"><div class="bar-label">Speed</div><div class="bar-track"><div class="bar-fill" style="width:${speedPct}%;background:${aiC}"></div></div></div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function filterCards(grp,btn){
+  document.querySelectorAll('.filter-btn').forEach(b=>{b.className='filter-btn';});
+  if(grp==='all') btn.className='filter-btn active-all';
+  else btn.className=`filter-btn active-${grp}`;
+  document.querySelectorAll('.card').forEach(c=>{
+    if(grp==='all'||c.dataset.grp===grp) c.classList.remove('hidden');
+    else c.classList.add('hidden');
+  });
+}
+
+let currentIdx=0;
+let radarChart=null;
+
+function openModal(idx){
+  currentIdx=idx;
+  renderModal();
+  document.getElementById('backdrop').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeModal(){
+  document.getElementById('backdrop').classList.remove('open');
+  document.body.style.overflow='';
+  if(radarChart){radarChart.destroy();radarChart=null;}
+}
+function handleBackdrop(e){
+  if(e.target===document.getElementById('backdrop')) closeModal();
+}
+function navigate(dir){
+  currentIdx=Math.max(0,Math.min(UC.length-1,currentIdx+dir));
+  if(radarChart){radarChart.destroy();radarChart=null;}
+  renderModal();
+}
+
+function renderModal(){
+  const uc=UC[currentIdx];
+  const [id,grp,icon,title,challenge,stars,sap,impact,speed,aiType]=uc;
+  const gc=getGroupColor(grp);
+  const starsVal=countStars(stars);
+  const isSelected=SELECTED_UCS.has(id);
+
+  const hdr=document.getElementById('modalHeader');
+  hdr.style.background=`linear-gradient(135deg, ${gc}12 0%, rgba(255,255,255,0) 100%)`;
+
+  document.getElementById('mIcon').textContent=icon;
+  document.getElementById('mTitle').textContent=title;
+  document.getElementById('mSub').textContent=`${id} · ${GROUP_LABELS[grp]} · ${aiType} · ${stars.split(' ').slice(1).join(' ')}`;
+
+  const phaseLabel=speed>=5?'Foundation':(speed===4?'Insights':'Vision');
+  const complexityVal=starsVal>=5?'High':(starsVal>=4?'Medium':'Standard');
+  document.getElementById('mChips').innerHTML=`
+    <div class="metric-chip"><span class="mc-val" style="color:${gc}">${impact}/5</span><span class="mc-lbl">Impact</span></div>
+    <div class="metric-chip"><span class="mc-val" style="color:#0070F2">${speed}/5</span><span class="mc-lbl">Speed</span></div>
+    <div class="metric-chip"><span class="mc-val" style="color:#D97706">${starsVal}&#9733;</span><span class="mc-lbl">Rating</span></div>
+    <div class="metric-chip"><span class="mc-val" style="color:#059669">${phaseLabel}</span><span class="mc-lbl">Phase</span></div>
+    <div class="metric-chip"><span class="mc-val" style="color:#7C3AED">${complexityVal}</span><span class="mc-lbl">Complexity</span></div>
+    ${isSelected?'<div class="metric-chip"><span class="mc-val" style="color:#D97706">&#10003; Selected</span><span class="mc-lbl">Customer Pick</span></div>':''}
+  `;
+
+  document.getElementById('footerCounter').textContent=`${currentIdx+1} of ${UC.length} use cases`;
+  document.getElementById('btnPrev').disabled=currentIdx===0;
+  document.getElementById('btnNext').disabled=currentIdx===UC.length-1;
+
+  const personas=PERSONAS[grp]||[];
+  const valueBullets=VALUE_BULLETS[grp]||[];
+  const seBullets=SE_BULLETS[grp]||[];
+  const aiHowBullets=AI_HOW[id]||[];
+  const sapArr=sap.split(',').map(s=>s.trim()).filter(Boolean);
+  const oob=OOB[id]||null;
+
+  let phaseCls='phase-insights',phaseTimeline='M7–18';
+  if(speed>=5){phaseCls='phase-foundation';phaseTimeline='M1–6';}
+  else if(speed<=3){phaseCls='phase-vision';phaseTimeline='M19–36';}
+
+  const sapPills=[...new Set(sapArr.flatMap(s=>s.split(/[,+]/)).map(s=>s.trim()).filter(s=>s.length>0))];
+  const personaHTML=personas.map(p=>`<div class="persona-card"><div class="pc-title">${p[0]}</div><div class="pc-desc">${p[1]}</div></div>`).join('');
+  const valueHTML=valueBullets.map(v=>`<div class="value-bullet">${v}</div>`).join('');
+  const seHTML=seBullets.map(b=>`<li>${b}</li>`).join('');
+  const aiHowHTML=aiHowBullets.map(b=>`<li>${b}</li>`).join('');
+  const sapCardsHTML=sapArr.map(s=>`<div class="sap-card">${s}</div>`).join('');
+  const sapPillsHTML=sapPills.slice(0,6).map(s=>`<div class="sap-pill">${s}</div>`).join('');
+  const canvasId='radarCanvas'+currentIdx+'_'+Date.now();
+
+  document.getElementById('modalBody').innerHTML=`
+    <div class="modal-left">
+      <div class="panel">
+        <div class="panel-heading">&#9888;&#65039; Saudi Energy Challenge</div>
+        <p>${challenge}</p>
+        <h4>&#9889; Why it matters for Saudi Energy</h4>
+        <ul>${seHTML}</ul>
+      </div>
+      <div class="panel">
+        <div class="panel-heading">&#129504; What &amp; How AI Improves This</div>
+        <ul class="ai-how-list">${aiHowHTML}</ul>
+      </div>
+      <div class="panel">
+        <div class="panel-heading">&#128176; Business Value Delivered</div>
+        ${valueHTML}
+      </div>
+      <div class="panel">
+        <div class="panel-heading">&#128101; Key Personas</div>
+        <div class="persona-cards">${personaHTML}</div>
+      </div>
+    </div>
+    <div class="modal-right">
+      <div class="panel">
+        <div class="panel-heading">&#129504; SAP AI Solution Stack</div>
+        <div class="sap-cards">${sapCardsHTML}</div>
+      </div>
+      <div class="panel">
+        <div class="panel-heading">&#128202; Performance Radar</div>
+        <div class="radar-wrap"><canvas id="${canvasId}" width="280" height="280" style="max-width:280px;max-height:280px"></canvas></div>
+      </div>
+      <div class="panel">
+        <div class="panel-heading">&#128197; Implementation Snapshot</div>
+        <span class="phase-badge ${phaseCls}">${phaseLabel} Phase</span>
+        <div class="impl-row"><span class="impl-label">Timeline</span><span class="impl-val">${phaseTimeline}</span></div>
+        <div class="impl-row"><span class="impl-label">AI Type</span><span class="impl-val">${aiType}</span></div>
+        <div class="impl-row"><span class="impl-label">Complexity</span><span class="impl-val">${complexityVal}</span></div>
+        <div class="sap-pills">${sapPillsHTML}</div>
+      </div>
+      ${oob?`<div class="panel">
+        <div class="panel-heading">&#128230; SAP Out-of-the-Box Readiness</div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+          <div style="font-size:24px;font-weight:800;color:${oob.level==='HIGH'?'#065F46':oob.level==='MEDIUM'?'#92400E':'#C2410C'}">${oob.pct}%</div>
+          <div>
+            <div class="oob-chip oob-${oob.level}" style="margin-bottom:4px">${oob.level==='HIGH'?'🟢 HIGH':oob.level==='MEDIUM'?'🟡 MEDIUM':'🔴 LOW'} Coverage</div>
+            <div style="font-size:10px;color:#94A3B8">SAP OOB &middot; Q1 2027 horizon</div>
+          </div>
+          <div class="oob-bar" style="flex:1"><div class="oob-bar-fill" style="width:${oob.pct}%;background:${oob.level==='HIGH'?'#059669':oob.level==='MEDIUM'?'#D97706':'#EA580C'}"></div></div>
+        </div>
+        <div style="margin-bottom:10px">
+          <div style="font-size:10px;font-weight:700;color:#065F46;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.07em">&#10003; Covered OOB by SAP</div>
+          ${oob.covered.map(c=>`<div style="font-size:11px;color:#374151;margin-bottom:5px;padding-left:8px;line-height:1.5">&bull; ${c}</div>`).join('')}
+        </div>
+        <div>
+          <div style="font-size:10px;font-weight:700;color:#C2410C;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.07em">&#128295; Requires Custom Development</div>
+          ${oob.custom.map(c=>`<div style="font-size:11px;color:#64748B;margin-bottom:5px;padding-left:8px;line-height:1.5">&bull; ${c}</div>`).join('')}
+        </div>
+      </div>`:''}
+    </div>
+  `;
+
+  requestAnimationFrame(()=>{
+    const ctx=document.getElementById(canvasId);
+    if(!ctx) return;
+    if(radarChart){radarChart.destroy();radarChart=null;}
+    radarChart=new Chart(ctx,{
+      type:'radar',
+      data:{
+        labels:['Impact','Speed','Domain Fit','Innovation','Strategic'],
+        datasets:[{
+          label:title,
+          data:[impact,speed,starsVal,4,starsVal],
+          backgroundColor:gc+'18',
+          borderColor:gc,
+          borderWidth:2,
+          pointBackgroundColor:gc,
+          pointRadius:4
+        }]
+      },
+      options:{
+        responsive:false,
+        plugins:{legend:{display:false}},
+        scales:{r:{
+          min:0,max:5,
+          ticks:{stepSize:1,color:'#94A3B8',font:{size:9},backdropColor:'transparent'},
+          grid:{color:'rgba(0,0,0,0.08)'},
+          pointLabels:{color:'#374151',font:{size:10}},
+          angleLines:{color:'rgba(0,0,0,0.08)'}
+        }}
+      }
+    });
+  });
+}
+
+document.addEventListener('keydown',e=>{
+  if(!document.getElementById('backdrop').classList.contains('open')) return;
+  if(e.key==='Escape') closeModal();
+  if(e.key==='ArrowLeft'&&currentIdx>0) navigate(-1);
+  if(e.key==='ArrowRight'&&currentIdx<UC.length-1) navigate(1);
+});
+
+buildCards();
+</script>
+
+<!-- GLOSSARY -->
+<div style="max-width:1400px;margin:0 auto 60px;padding:0 40px">
+  <div style="border-top:1px solid rgba(0,0,0,0.08);padding-top:40px">
+    <div style="font-size:11px;font-weight:700;color:#B45309;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:20px">&#128218; Abbreviations &amp; Reference Glossary</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0 32px">
+
+      <div>
+        <div style="font-size:10px;font-weight:700;color:#1D4ED8;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid rgba(0,112,242,0.2)">SAP HR Technology</div>
+        <table style="width:100%;border-collapse:collapse;font-size:12px">
+          <tr><td style="color:#0F172A;font-weight:600;padding:4px 8px 4px 0;white-space:nowrap">SAP SuccessFactors</td><td style="color:#64748B;padding:4px 0">SAP's cloud HCM suite covering Core HR, Recruiting, Learning, Performance, and Employee Experience</td></tr>
+          <tr><td style="color:#0F172A;font-weight:600;padding:4px 8px 4px 0;white-space:nowrap">SAP Joule</td><td style="color:#64748B;padding:4px 0">SAP's conversational AI assistant and agentic workflow engine embedded across all SuccessFactors modules</td></tr>
+          <tr><td style="color:#0F172A;font-weight:600;padding:4px 8px 4px 0;white-space:nowrap">SAP AI Core</td><td style="color:#64748B;padding:4px 0">SAP's enterprise platform for training, deploying, and running ML models and agentic AI workflows</td></tr>
+          <tr><td style="color:#0F172A;font-weight:600;padding:4px 8px 4px 0;white-space:nowrap">SAP BTP</td><td style="color:#64748B;padding:4px 0">Business Technology Platform &mdash; cloud integration and extension platform for custom AI agent development</td></tr>
+          <tr><td style="color:#0F172A;font-weight:600;padding:4px 8px 4px 0;white-space:nowrap">SAP Analytics Cloud</td><td style="color:#64748B;padding:4px 0">AI-embedded planning and analytics platform for HR people analytics and workforce dashboards</td></tr>
+          <tr><td style="color:#0F172A;font-weight:600;padding:4px 8px 4px 0;white-space:nowrap">Opportunity Marketplace</td><td style="color:#64748B;padding:4px 0">SAP SuccessFactors module for internal talent mobility, job posting, and career opportunity discovery</td></tr>
+          <tr><td style="color:#0F172A;font-weight:600;padding:4px 8px 4px 0;white-space:nowrap">SF Performance &amp; Goals</td><td style="color:#64748B;padding:4px 0">SuccessFactors module for objective setting, performance review cycles, and continuous feedback</td></tr>
+          <tr><td style="color:#0F172A;font-weight:600;padding:4px 8px 4px 0;white-space:nowrap">SF Learning (LMS)</td><td style="color:#64748B;padding:4px 0">SuccessFactors learning management system covering training catalog, pathways, and compliance tracking</td></tr>
+          <tr><td style="color:#0F172A;font-weight:600;padding:4px 8px 4px 0;white-space:nowrap">SF Onboarding 2.0</td><td style="color:#64748B;padding:4px 0">SuccessFactors module for new hire onboarding and employee offboarding workflow automation</td></tr>
+          <tr><td style="color:#0F172A;font-weight:600;padding:4px 8px 4px 0;white-space:nowrap">SAP Build</td><td style="color:#64748B;padding:4px 0">Low-code development and process automation platform for workflow orchestration on SAP BTP</td></tr>
+        </table>
+      </div>
+
+      <div>
+        <div style="font-size:10px;font-weight:700;color:#C2410C;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid rgba(234,88,12,0.2)">Saudi Energy HR Operations</div>
+        <table style="width:100%;border-collapse:collapse;font-size:12px">
+          <tr><td style="color:#0F172A;font-weight:600;padding:4px 8px 4px 0;white-space:nowrap">PMSS Team</td><td style="color:#64748B;padding:4px 0">Performance Management Support System team &mdash; administers performance cycle operations and form management</td></tr>
+          <tr><td style="color:#0F172A;font-weight:600;padding:4px 8px 4px 0;white-space:nowrap">HRBP</td><td style="color:#64748B;padding:4px 0">HR Business Partner &mdash; strategic HR liaison embedded within business units to support managers and employees</td></tr>
+          <tr><td style="color:#0F172A;font-weight:600;padding:4px 8px 4px 0;white-space:nowrap">PM Champion</td><td style="color:#64748B;padding:4px 0">Performance Management Champion &mdash; validates objectives and governs PM cycle compliance across departments</td></tr>
+          <tr><td style="color:#0F172A;font-weight:600;padding:4px 8px 4px 0;white-space:nowrap">BM Champion</td><td style="color:#64748B;padding:4px 0">Business Management Champion validation step in performance form routing &mdash; manual step eliminated by AI</td></tr>
+          <tr><td style="color:#0F172A;font-weight:600;padding:4px 8px 4px 0;white-space:nowrap">Saudization / Nitaqat</td><td style="color:#64748B;padding:4px 0">Saudi Arabia's workforce nationalization program defining the required percentage of Saudi nationals per company</td></tr>
+          <tr><td style="color:#0F172A;font-weight:600;padding:4px 8px 4px 0;white-space:nowrap">Notice Period</td><td style="color:#64748B;padding:4px 0">Contractual period between resignation or termination notice and final employee separation date</td></tr>
+          <tr><td style="color:#0F172A;font-weight:600;padding:4px 8px 4px 0;white-space:nowrap">SMART Goals</td><td style="color:#64748B;padding:4px 0">Specific, Measurable, Achievable, Relevant, Time-bound &mdash; the quality framework for validating performance objectives</td></tr>
+          <tr><td style="color:#0F172A;font-weight:600;padding:4px 8px 4px 0;white-space:nowrap">IDP</td><td style="color:#64748B;padding:4px 0">Individual Development Plan &mdash; personalized learning and development roadmap aligned to employee career goals</td></tr>
+          <tr><td style="color:#0F172A;font-weight:600;padding:4px 8px 4px 0;white-space:nowrap">FTE</td><td style="color:#64748B;padding:4px 0">Full-Time Equivalent &mdash; standard unit for measuring workforce headcount in workforce planning and reporting</td></tr>
+          <tr><td style="color:#0F172A;font-weight:600;padding:4px 8px 4px 0;white-space:nowrap">SLA</td><td style="color:#64748B;padding:4px 0">Service Level Agreement &mdash; defined timeline for completing HR activities such as onboarding and offboarding tasks</td></tr>
+        </table>
+      </div>
+
+      <div>
+        <div style="font-size:10px;font-weight:700;color:#5B21B6;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid rgba(124,58,237,0.2)">HR &amp; Regulatory Terms</div>
+        <table style="width:100%;border-collapse:collapse;font-size:12px">
+          <tr><td style="color:#0F172A;font-weight:600;padding:4px 8px 4px 0;white-space:nowrap">Vision 2030</td><td style="color:#64748B;padding:4px 0">Saudi Arabia's national transformation strategy targeting economic diversification, Saudization, and human capital development</td></tr>
+          <tr><td style="color:#0F172A;font-weight:600;padding:4px 8px 4px 0;white-space:nowrap">GOSI</td><td style="color:#64748B;padding:4px 0">General Organization for Social Insurance &mdash; mandatory Saudi social security, pension, and occupational hazard authority</td></tr>
+          <tr><td style="color:#0F172A;font-weight:600;padding:4px 8px 4px 0;white-space:nowrap">HRDF</td><td style="color:#64748B;padding:4px 0">Human Resources Development Fund &mdash; Saudi fund supporting workforce training and Saudization initiatives</td></tr>
+          <tr><td style="color:#0F172A;font-weight:600;padding:4px 8px 4px 0;white-space:nowrap">KSA Labor Law</td><td style="color:#64748B;padding:4px 0">Saudi Arabian Labor Law governing employment terms, notice periods, and all separation entitlements and obligations</td></tr>
+          <tr><td style="color:#0F172A;font-weight:600;padding:4px 8px 4px 0;white-space:nowrap">OKR</td><td style="color:#64748B;padding:4px 0">Objectives and Key Results &mdash; goal-setting framework linking individual objectives to organizational strategy cascades</td></tr>
+          <tr><td style="color:#0F172A;font-weight:600;padding:4px 8px 4px 0;white-space:nowrap">KPI</td><td style="color:#64748B;padding:4px 0">Key Performance Indicator &mdash; measurable target used to evaluate employee and organizational performance outcomes</td></tr>
+          <tr><td style="color:#0F172A;font-weight:600;padding:4px 8px 4px 0;white-space:nowrap">Agentic AI</td><td style="color:#64748B;padding:4px 0">AI that autonomously plans and executes multi-step actions, orchestrating multiple sub-agents to complete complex HR workflows</td></tr>
+          <tr><td style="color:#0F172A;font-weight:600;padding:4px 8px 4px 0;white-space:nowrap">NLP</td><td style="color:#64748B;padding:4px 0">Natural Language Processing &mdash; AI capability enabling systems to understand and respond to human language inputs</td></tr>
+          <tr><td style="color:#0F172A;font-weight:600;padding:4px 8px 4px 0;white-space:nowrap">LLM</td><td style="color:#64748B;padding:4px 0">Large Language Model &mdash; the foundational AI model powering Joule's goal writing, validation, and guidance capabilities</td></tr>
+          <tr><td style="color:#0F172A;font-weight:600;padding:4px 8px 4px 0;white-space:nowrap">RAG</td><td style="color:#64748B;padding:4px 0">Retrieval-Augmented Generation &mdash; technique enabling AI to answer questions grounded in Saudi Energy's HR knowledge base</td></tr>
+        </table>
+      </div>
+
+    </div>
+
+    <div style="margin-top:28px">
+      <div style="font-size:10px;font-weight:700;color:#065F46;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid rgba(5,150,105,0.2)">SAP SuccessFactors Module Reference</div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <div style="background:rgba(0,112,242,0.06);border:1px solid rgba(0,112,242,0.18);border-radius:8px;padding:8px 14px;font-size:11px"><span style="color:#1D4ED8;font-weight:700">Employee Central</span> <span style="color:#64748B">&mdash; Core HR, org structure &amp; position management</span></div>
+        <div style="background:rgba(0,112,242,0.06);border:1px solid rgba(0,112,242,0.18);border-radius:8px;padding:8px 14px;font-size:11px"><span style="color:#1D4ED8;font-weight:700">Recruiting (RCM)</span> <span style="color:#64748B">&mdash; Requisition, pipeline &amp; offer management</span></div>
+        <div style="background:rgba(0,112,242,0.06);border:1px solid rgba(0,112,242,0.18);border-radius:8px;padding:8px 14px;font-size:11px"><span style="color:#1D4ED8;font-weight:700">Onboarding 2.0</span> <span style="color:#64748B">&mdash; New hire &amp; offboarding workflow automation</span></div>
+        <div style="background:rgba(0,112,242,0.06);border:1px solid rgba(0,112,242,0.18);border-radius:8px;padding:8px 14px;font-size:11px"><span style="color:#1D4ED8;font-weight:700">Performance &amp; Goals</span> <span style="color:#64748B">&mdash; Objectives, review cycles &amp; continuous feedback</span></div>
+        <div style="background:rgba(0,112,242,0.06);border:1px solid rgba(0,112,242,0.18);border-radius:8px;padding:8px 14px;font-size:11px"><span style="color:#1D4ED8;font-weight:700">Succession &amp; Development</span> <span style="color:#64748B">&mdash; Career planning, 9-box &amp; succession pipelines</span></div>
+        <div style="background:rgba(0,112,242,0.06);border:1px solid rgba(0,112,242,0.18);border-radius:8px;padding:8px 14px;font-size:11px"><span style="color:#1D4ED8;font-weight:700">Learning (LMS)</span> <span style="color:#64748B">&mdash; Training catalog, pathways &amp; compliance tracking</span></div>
+        <div style="background:rgba(0,112,242,0.06);border:1px solid rgba(0,112,242,0.18);border-radius:8px;padding:8px 14px;font-size:11px"><span style="color:#1D4ED8;font-weight:700">Time Off</span> <span style="color:#64748B">&mdash; Leave management &amp; absence tracking</span></div>
+        <div style="background:rgba(0,112,242,0.06);border:1px solid rgba(0,112,242,0.18);border-radius:8px;padding:8px 14px;font-size:11px"><span style="color:#1D4ED8;font-weight:700">People Analytics</span> <span style="color:#64748B">&mdash; Workforce reporting &amp; predictive HR insights</span></div>
+        <div style="background:rgba(0,112,242,0.06);border:1px solid rgba(0,112,242,0.18);border-radius:8px;padding:8px 14px;font-size:11px"><span style="color:#1D4ED8;font-weight:700">Opportunity Marketplace</span> <span style="color:#64748B">&mdash; Internal mobility, gig work &amp; career discovery</span></div>
+      </div>
+    </div>
+
+    <div style="margin-top:20px;font-size:10px;color:rgba(0,0,0,0.3);text-align:center">&copy; 2025 SAP SE &middot; Saudi Energy &middot; SAP SuccessFactors &middot; Qualitative assessments based on SAP Sapphire 2024/2025 announcements and industry benchmarks &middot; Confidential</div>
+  </div>
+</div>
+
+</body>
+</html>
